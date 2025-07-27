@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <style>
+        h1{
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>登录</h1>
+    <form action="{% url 'user_login' %}" method="post">
+        {% csrf_token %}
+        <label for="username">用户名:</label>
+        <input type="text" name="username" required><br>
+        <label for="password">密码:</label>
+        <input type="password" name="password" required><br>
+        <input type="submit" value="登录">
+    </form>
+</body>
+</html>

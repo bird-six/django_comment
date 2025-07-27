@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>评论区</title>
+    <style>
+        :root {
+            --primary-color: #165DFF;
+            --secondary-color: #0E42B3;
+            --light-color: #F5F7FA;
+            --dark-color: #1D2129;
+            --gray-color: #86909C;
+            --border-color: #E5E6EB;
+            --comment-bg: #F7FAFC;
+            --reply-bg: #F0F2F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .welcome-message {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .comment-form {
+            padding: 0 2rem 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.2);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .comments-section {
+            padding: 0 2rem 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comment {
+            background-color: var(--comment-bg);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .comment:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: rgba(22, 93, 255, 0.05);
+        }
+
+        .comment-author {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .comment-timestamp {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-top: 0.3rem;
+            padding-left: 1.5rem;
+        }
+
+        .comment-content {
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .reply-btn {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: none;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .reply-btn:hover {
+            color: var(--secondary-color);
+        }
+
+        .reply-form {
+            padding: 1rem 1.5rem;
+            display: none;
+        }
+
+        .reply-form textarea {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.9rem;
+            resize: vertical;
+            min-height: 80px;
+            margin-bottom: 0.8rem;
+        }
+
+        .reply-form .btn {
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .replies {
+            margin-top: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .reply {
+            background-color: var(--reply-bg);
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            background-color: rgba(22, 93, 255, 0.03);
+        }
+
+        .reply-author {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .reply-to {
+            font-size: 0.9rem;
+            color: var(--gray-color);
+            margin-left: 0.5rem;
+        }
+
+        .reply-timestamp {
+            font-size: 0.8rem;
+            color: var(--gray-color);
+            margin-top: 0.2rem;
+            padding-left: 1.2rem;
+        }
+
+        .reply-content {
+            padding: 0.8rem 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+            }
+
+            .header {
+                padding: 1.2rem 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .welcome-message {
+                font-size: 1rem;
+            }
+
+            .comment-form, .comments-section {
+                padding: 0 1.5rem 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .comment-header, .reply-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0.8rem 1.2rem;
+            }
+
+            .reply-btn {
+                margin-top: 0.5rem;
+            }
+
+            .comment-timestamp, .reply-timestamp {
+                padding-left: 1.2rem;
+            }
+
+            .replies {
+                padding-left: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="welcome-message">欢迎{{ username }}来到评论区</div>
+            <h1>评论区</h1>
+        </div>
+        <!-- 评论表单 -->
+        <div class="comment-form">
+            <h2 class="section-title">发表评论</h2>
+            <form action="{% url 'comment' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <textarea name="content" rows="4" placeholder="分享你的想法..."></textarea>
+                </div>
+                <button type="submit" class="btn">发布评论</button>
+            </form>
+        </div>
+        
+        <!-- 评论列表 -->
+        <div class="comments-section">
+            <h2 class="section-title">评论列表</h2>
+            <!-- 遍历显示评论 -->
+            {% for comment in comments %}
+                <div class="comment">
+                    <div class="comment-header">
+                        <div>
+                            <span class="comment-author">{{ comment.user.username }}</span>
+                        </div>
+                        <button type="button" onclick="toggleReplyForm({{ comment.id }})" class="reply-btn">
+                            <i class="fa fa-reply"></i> 回复
+                        </button>
+                    </div>
+                    <div class="comment-timestamp">{{ comment.created_at }}</div>
+                    <div class="comment-content">{{ comment.content }}</div>
+                
+                    <!-- 回复表单 -->
+                    <div class="reply-form" id="reply-form-{{ comment.id }}">
+                        <form action="{% url 'reply' comment.id %}" method="post">
+                            {% csrf_token %}
+                            <textarea name="reply_content" rows="3" placeholder="回复 {{ comment.user.username }}..."></textarea>
+                            <button type="submit" class="btn">提交回复</button>
+                        </form>
+                    </div>
+                    
+                    <!-- 回复列表 -->
+                    <div class="replies">
+                        <!-- 通过模型中定义的递归函数遍历评论的所有回复 -->
+                        {% for reply in comment.get_all_replies %}
+                            <div class="reply">
+                                <div class="reply-header">
+                                    <div>
+                                        <span class="reply-author">{{ reply.user.username }}</span>
+                                        <!-- 通过模型中定义的函数显示回复的用户名 -->
+                                        <span class="reply-to">回复 {{ reply.get_parent_username }}</span>
+                                    </div>
+                                    <button type="button" onclick="toggleReplyForm({{ reply.id }})" class="reply-btn">
+                                        <i class="fa fa-reply"></i> 回复
+                                    </button>
+                                </div>
+                                <div class="reply-timestamp">{{ reply.created_at }}</div>
+                                <div class="reply-content">{{ reply.content }}</div>
+                                <!-- 回复表单 -->
+                                <div class="reply-form" id="reply-form-{{ reply.id }}">
+                                    <form action="{% url 'reply' reply.id %}" method="post">
+                                        {% csrf_token %}
+                                        <textarea name="reply_content" rows="3" placeholder="回复 {{ reply.user.username }}..."></textarea>
+                                        <button type="submit" class="btn">提交回复</button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function toggleReplyForm(id) {
+            const form = document.getElementById(`reply-form-${id}`);
+            if (form) {
+                form.style.display = form.style.display === 'block' ? 'none' : 'block';
+
+                // 如果是展开状态，自动聚焦到文本框
+                if (form.style.display === 'block') {
+                    const textarea = form.querySelector('textarea');
+                    if (textarea) textarea.focus();
+                }
+            }
+        }
+
+        // 为了更好的用户体验，添加页面加载动画
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('loaded');
+        });
+    </script>
+</body>
+</html>
